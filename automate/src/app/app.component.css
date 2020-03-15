@@ -5,4 +5,6 @@
 }
 .content-container {
     height: calc(100% - 51px);
+    padding-left: 40px;
+    padding-right: 40px;
 }

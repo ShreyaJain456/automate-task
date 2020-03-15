@@ -10,25 +10,48 @@ import { NoteService } from '../../note.service';
 export class AddNoteComponent implements OnInit {
 
   /**
-   * Instance of todays date and time
+   * Instance of new note
    */
-  todaysDate : Date = new Date();
   newNote : NoteModel = new NoteModel();
+  /**
+   * List of all notes
+   */
+  noteList : Array<NoteModel> = [];
 
   constructor(
     private noteService : NoteService
   ) { }
 
   ngOnInit() {
-    if(!this.noteService.noteList) {
-      this.noteService.noteList = [];
-    }
-    this.noteService.noteList.push(this.newNote);
+
+    this.noteService.noteListObservable.subscribe(data => {
+      if(data && data.length) {
+        this.noteList = data;
+      }
+    })
+
+    this.addNote();
+  }
+
+  addNote() {
+    this.newNote = new NoteModel();
+    this.newNote.dateTime = new Date();
+
+    this.noteList.push(this.newNote);
+    this.noteList = this.noteList.sort((note1, note2) => {
+      if(note1.dateTime.getTime() < note2.dateTime.getTime()) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+    this.noteService.updateNoteList(this.noteList);
   }
 
   onNoteChange() {
-    if(this.newNote.data) {
-      localStorage.setItem("notes",JSON.stringify(this.newNote));
+    if(this.newNote.data && this.noteList && this.noteList.length) {
+      this.noteService.updateNoteList(this.noteList);
+      localStorage.setItem("notes",JSON.stringify(this.noteList));
     }
   }
 

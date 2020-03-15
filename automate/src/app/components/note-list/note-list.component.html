@@ -1,3 +1,8 @@
-<p>
-  note-list works!
-</p>
+<div class="outer-container">
+  <ng-container *ngIf="noteList?.length">
+      <div *ngFor="let note of noteList" class="note-container" fxLayout="column">
+        <span>{{note.data}}</span>
+        <span>{{note.date | date : 'hh mm a'}}</span>
+        </div>
+  </ng-container>
+</div>
