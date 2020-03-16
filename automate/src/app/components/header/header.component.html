@@ -1,3 +1,7 @@
-<div class="outer-container">
-    <i class="material-icons">delete</i>
-</div>  
+<div class="outer-container" fxLayout="row" fxLayoutGap=20px>
+    <ng-container *ngFor="let icon of icons; let index = index">
+        <div class="icon-container" [title]="icon.title" (click)="iconClicked(index)"> 
+            <i class="material-icons icon">{{icon.iconName}}</i>
+        </div>
+    </ng-container>
+</div>

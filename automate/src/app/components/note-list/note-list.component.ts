@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NoteService } from '../../note.service';
-import { NoteModel } from '../../models/NoteMoel';
+import { NoteModel } from '../../models/NoteModel';
 
 @Component({
   selector: 'app-note-list',
@@ -13,6 +13,10 @@ export class NoteListComponent implements OnInit {
    * List of all notes
    */
   noteList: Array<NoteModel> = [];
+  /**
+   * Index of selected note
+   */
+  selectedNoteIndex : number;
 
   constructor(
     private noteService: NoteService
@@ -20,12 +24,12 @@ export class NoteListComponent implements OnInit {
 
   ngOnInit() {
 
+    this.getNoteList();
     this.noteService.noteListObservable.subscribe(data => {
       if(data && data.length) {
         this.noteList = data;
       }
     })
-    this.getNoteList();
   }
 
   /**

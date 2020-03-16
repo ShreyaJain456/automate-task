@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NoteModel } from '../../models/NoteMoel';
+import { NoteModel } from '../../models/NoteModel';
 import { NoteService } from '../../note.service';
 
 @Component({
@@ -17,6 +17,14 @@ export class AddNoteComponent implements OnInit {
    * List of all notes
    */
   noteList : Array<NoteModel> = [];
+  /**
+   * Value of icon selected
+   */
+  iconSelected : number;
+  /**
+   * Checks whether new note is added or previous one is edited
+   */
+  isNewNote : boolean;
 
   constructor(
     private noteService : NoteService
@@ -28,14 +36,28 @@ export class AddNoteComponent implements OnInit {
       if(data && data.length) {
         this.noteList = data;
       }
+      if(!this.isNewNote)
+      this.setNewNoteModel();
     })
 
-    this.addNote();
+    this.noteService.iconSelectedObservable.subscribe(data => {
+      if(data) {
+        this.iconSelected = data;
+        if(this.iconSelected == this.noteService.NEW_NOTE_ICON) {
+          this.addNote();
+          this.setNewNoteModel();
+        }
+      }
+    })
   }
 
-  addNote() {
+  /**
+   * Sets new note model
+   */
+  setNewNoteModel() {
     this.newNote = new NoteModel();
     this.newNote.dateTime = new Date();
+    this.isNewNote = true;
 
     this.noteList.push(this.newNote);
     this.noteList = this.noteList.sort((note1, note2) => {
@@ -48,10 +70,14 @@ export class AddNoteComponent implements OnInit {
     this.noteService.updateNoteList(this.noteList);
   }
 
-  onNoteChange() {
+  /**
+   * Adds newly added note in list
+   */
+  addNote() {
     if(this.newNote.data && this.noteList && this.noteList.length) {
       this.noteService.updateNoteList(this.noteList);
       localStorage.setItem("notes",JSON.stringify(this.noteList));
+      this.isNewNote = false;
     }
   }
 

@@ -1,8 +1,9 @@
 <div class="outer-container">
   <ng-container *ngIf="noteList?.length">
-      <div *ngFor="let note of noteList" class="note-container" fxLayout="column">
-        <span>{{note.data}}</span>
-        <span>{{note.date | date : 'hh mm a'}}</span>
+      <div *ngFor="let note of noteList; let index = index" class="note-container" fxLayout="column" [ngClass]="{'selected-note': selectedNoteIndex == index}">
+        <span *ngIf="note?.data">{{note.data}}</span>
+        <span *ngIf="!note.data">New Note</span>
+        <span>{{note?.dateTime | date : 'h:mm a'}}</span>
         </div>
   </ng-container>
 </div>
